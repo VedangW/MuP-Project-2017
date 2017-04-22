@@ -8,8 +8,8 @@
 	creg8255	equ	06h
 	
 ;Keyboard data
-	table_d	db	06h, 5bh, 4fh, 66h, 6dh, 7dh, 27h, 7fh, 6fh, 37h, 7ch, 39h
-	table_k	db	0eeh, 0edh, 0ebh, 0deh, 0ddh, 0dbh, 0beh, 0bdh, 0bbh, 7eh, 7dh, 7bh
+	table_d	db	06h, 5bh, 4fh, 66h, 6dh, 7dh, 27h, 7fh, 6fh
+	table_k	db	66h, 65h, 63h, 56h, 55h, 53h, 36h, 35h, 33h
 	
 ;8254 data
 ;Assuming base address = 10h
@@ -26,8 +26,8 @@
 init8255_:
 	mov al, 83h
 	out creg8255, al
+
 	
-;THIS KEYBOARD IS A NORMAL 4X3 KEYBOARD. WE STILL NEED TO CHANGE A LOT OF THINGS ABOUT IT.
 kr_0:					;Checking for key release
 	mov al, 00h
 	out 04h, al
@@ -80,7 +80,7 @@ kr_2:					;Checking for key press
 	
 column_activate_:		;When some column is activated
 	or	al, bl
-	mov cx, 12			;Because there are 12 keys
+	mov cx, 9			;Because there are 12 keys
 	mov di, 00h
 	
 	compare_:	cmp al, table_k[di]
@@ -90,7 +90,7 @@ column_activate_:		;When some column is activated
 
 final_kb_:
 	mov ax, di
-;	lea bx, table 		Whatever the fuck this does.
+	lea bx, table_d 		
 	xlat
 	out 00h, al
 	jmp kr_0			;Need to add something different here too.
